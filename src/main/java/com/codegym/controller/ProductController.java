@@ -35,18 +35,23 @@ public class ProductController {
         modelAndView.addObject("productForm", new ProductForm());
         return modelAndView;
     }
-//
-//    @GetMapping("/createIMG")
-//    public ModelAndView showCreateIMG() {
-//        ModelAndView modelAndView = new ModelAndView("/createIMG");
-//        modelAndView.addObject("productForm", new ProductForm());
-//        return modelAndView;
-//    }
+
+    @GetMapping("/createIMG")
+    public ModelAndView showCreateIMG() {
+        ModelAndView modelAndView = new ModelAndView("/createIMG");
+        modelAndView.addObject("productForm", new ProductForm());
+        return modelAndView;
+    }
 
     @PostMapping("/save")
     public ModelAndView saveProduct(@ModelAttribute ProductForm productForm) {
         MultipartFile multipartFile = productForm.getImage();
         String fileName = multipartFile.getOriginalFilename();
+        try {
+            FileCopyUtils.copy(productForm.getImage().getBytes(), new File(fileUpload + fileName));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
         Product product = new Product(productForm.getId(), productForm.getName(),
                 productForm.getDescription(), fileName);
         productService.save(product);
@@ -56,12 +61,17 @@ public class ProductController {
         return modelAndView;
     }
 
-//    @PostMapping("/saveIMG")
-//    public ModelAndView saveIMG(@RequestParam MultipartFile image) {
-//        String fileName = image.getOriginalFilename();
-//        ModelAndView modelAndView = new ModelAndView("/index2");
-//        modelAndView.addObject("src", fileName);
-//        modelAndView.addObject("message", "Created new product successfully !");
-//        return modelAndView;
-//    }
+    @PostMapping("/saveIMG")
+    public ModelAndView saveIMG(@RequestParam MultipartFile image) {
+        String fileName = image.getOriginalFilename();
+        try {
+            FileCopyUtils.copy(image.getBytes(), new File(fileUpload + fileName));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        ModelAndView modelAndView = new ModelAndView("/index2");
+        modelAndView.addObject("src", fileName);
+        modelAndView.addObject("message", "Created new product successfully !");
+        return modelAndView;
+    }
 }
