@@ -1,9 +1,6 @@
 package com.codegym.controller;
 
-import com.codegym.model.Product;
-import com.codegym.model.ProductForm;
-import com.codegym.service.IProductService;
-import com.codegym.service.ProductService;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,61 +14,26 @@ import java.io.IOException;
 import java.util.List;
 
 @Controller
-@RequestMapping("/product")
 public class ProductController {
-    private final IProductService productService = new ProductService();
-    @Value("${file-upload}")
-    private String fileUpload;
-    @GetMapping("")
-    public String index(Model model) {
-        List<Product> products = productService.findAll();
-        model.addAttribute("products", products);
-        return "/index";
-    }
 
-    @GetMapping("/create")
-    public ModelAndView showCreateForm() {
-        ModelAndView modelAndView = new ModelAndView("/create");
-        modelAndView.addObject("productForm", new ProductForm());
-        return modelAndView;
-    }
-
-    @GetMapping("/createIMG")
+    @GetMapping("/upload")
     public ModelAndView showCreateIMG() {
         ModelAndView modelAndView = new ModelAndView("/createIMG");
-        modelAndView.addObject("productForm", new ProductForm());
         return modelAndView;
     }
 
-    @PostMapping("/save")
-    public ModelAndView saveProduct(@ModelAttribute ProductForm productForm) {
-        MultipartFile multipartFile = productForm.getImage();
-        String fileName = multipartFile.getOriginalFilename();
-        try {
-            FileCopyUtils.copy(productForm.getImage().getBytes(), new File(fileUpload + fileName));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        Product product = new Product(productForm.getId(), productForm.getName(),
-                productForm.getDescription(), fileName);
-        productService.save(product);
-        ModelAndView modelAndView = new ModelAndView("/create");
-        modelAndView.addObject("productForm", productForm);
-        modelAndView.addObject("message", "Created new product successfully !");
-        return modelAndView;
-    }
 
-    @PostMapping("/saveIMG")
+    @PostMapping("/show")
     public ModelAndView saveIMG(@RequestParam MultipartFile image) {
         String fileName = image.getOriginalFilename();
         try {
-            FileCopyUtils.copy(image.getBytes(), new File(fileUpload + fileName));
+            FileCopyUtils.copy(image.getBytes(),
+                    new File("/Users/daonhuanh/Downloads/Codegym/nal/" + fileName)); // coppy ảnh từ ảnh nhận được vào thư mục quy định
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         ModelAndView modelAndView = new ModelAndView("/index2");
         modelAndView.addObject("src", fileName);
-        modelAndView.addObject("message", "Created new product successfully !");
         return modelAndView;
     }
 }

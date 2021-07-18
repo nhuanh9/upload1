@@ -26,8 +26,6 @@ import java.io.IOException;
 @ComponentScan("com.codegym.controller")
 @PropertySource("classpath:upload_file.properties")
 public class AppConfiguration implements WebMvcConfigurer,  ApplicationContextAware {
-    @Value("${file-upload}")
-    private String fileUpload;
 
     private ApplicationContext applicationContext;
 
@@ -63,18 +61,17 @@ public class AppConfiguration implements WebMvcConfigurer,  ApplicationContextAw
         return viewResolver;
     }
 
-    //Cấu hình upload file
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/nhuanh/**")
-                .addResourceLocations("file:" + fileUpload);
+        registry.addResourceHandler("/nhuanh/**") //đường dẫn ảo thay thế cho đường dẫn thật bên dưới (ngắn hơn)
+                .addResourceLocations("file:" + "/Users/daonhuanh/Downloads/Codegym/nal/");
 
     }
 
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver getResolver() throws IOException {
         CommonsMultipartResolver resolver = new CommonsMultipartResolver();
-        resolver.setMaxUploadSizePerFile(52428800);
+        resolver.setMaxUploadSizePerFile(52428800); //kích thước tối đa
         return resolver;
     }
 }
