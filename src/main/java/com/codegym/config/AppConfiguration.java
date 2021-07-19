@@ -24,7 +24,6 @@ import java.io.IOException;
 @Configuration
 @EnableWebMvc
 @ComponentScan("com.codegym.controller")
-@PropertySource("classpath:upload_file.properties")
 public class AppConfiguration implements WebMvcConfigurer,  ApplicationContextAware {
 
     private ApplicationContext applicationContext;

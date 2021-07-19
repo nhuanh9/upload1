@@ -16,6 +16,9 @@ import java.util.List;
 @Controller
 public class ProductController {
 
+    @Value("${file-upload}")
+    private String fileUpload;
+
     @GetMapping("/upload")
     public ModelAndView showCreateIMG() {
         ModelAndView modelAndView = new ModelAndView("/createIMG");
@@ -24,16 +27,18 @@ public class ProductController {
 
 
     @PostMapping("/show")
-    public ModelAndView saveIMG(@RequestParam MultipartFile image) {
+    public ModelAndView saveIMG(@RequestParam MultipartFile image, @RequestParam String imageLink) {
         String fileName = image.getOriginalFilename();
         try {
             FileCopyUtils.copy(image.getBytes(),
-                    new File("/Users/daonhuanh/Downloads/Codegym/nal/" + fileName)); // coppy ảnh từ ảnh nhận được vào thư mục quy định
+                    new File(fileUpload + fileName)); // coppy ảnh từ ảnh nhận được vào thư mục quy định,
+                                        // đường dẫn ảo là /nhuanh/
         } catch (IOException ex) {
             ex.printStackTrace();
         }
         ModelAndView modelAndView = new ModelAndView("/index2");
         modelAndView.addObject("src", fileName);
+        modelAndView.addObject("srcImg", imageLink);
         return modelAndView;
     }
 }
